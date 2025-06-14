@@ -25,6 +25,7 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     const gameCollections = client.db("Ocean-Of-Game").collection("games");
+    const userCollections = client.db("Ocean-Of-Game").collection("users");
 
     app.get("/games", async (req, res) => {
       const cursore = gameCollections.find();
@@ -70,6 +71,14 @@ async function run() {
       const result = await gameCollections.deleteOne(query);
       res.send(result);
     });
+
+    // login user:
+      app.get("/users", async (req, res) => {
+      const cursore = userCollections.find();
+      const result = await cursore.toArray();
+      res.send(result);
+    });
+    
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
