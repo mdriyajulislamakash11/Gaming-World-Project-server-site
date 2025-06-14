@@ -34,10 +34,10 @@ async function run() {
 
     app.get("/games/:id", async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)}
+      const query = { _id: new ObjectId(id) };
       const result = await gameCollections.findOne(query);
-      res.send(result)
-    })
+      res.send(result);
+    });
 
     app.post("/games", async (req, res) => {
       const games = req.body;
@@ -45,12 +45,31 @@ async function run() {
       res.send(result);
     });
 
+    app.put("/games/:id", async (req, res) => {
+      const id = req.params.id;
+      const updateGames = req.body;
+      const filter = { _id: new ObjectId(id) }
+      const options = { upsert: true }; 
+      const newUpdateGames = {
+        $set: {
+          image: updateGames.image,
+          title: updateGames.title,
+          description: updateGames.description,
+          publishDate: updateGames.publishDate,
+          rating: updateGames.rating,
+        },
+      };
+
+      const result = await gameCollections.updateOne(filter, newUpdateGames, options);
+      res.send(result)
+    });
+
     app.delete("/games/:id", async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)}
+      const query = { _id: new ObjectId(id) };
       const result = await gameCollections.deleteOne(query);
-      res.send(result)
-    })
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
